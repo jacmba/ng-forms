@@ -12,10 +12,12 @@ import { Observable, of } from 'rxjs';
 export class UserSettingsFormComponent implements OnInit {
   originalUserSettings: UserSettings = {
     name: null,
-    emailOffers: null,
-    interfaceStyle: null,
+    emailOffers: 'No',
+    interfaceStyle: 'Light',
     subscriptionType: null,
     notes: null,
+    startDate: new Date(),
+    rating: 0,
   };
 
   userSettings: UserSettings = { ...this.originalUserSettings };
@@ -35,6 +37,8 @@ export class UserSettingsFormComponent implements OnInit {
     console.log('in onSubmit: ', form.valid);
 
     if (form.valid) {
+      this.postError = false;
+      this.postErrorMessage = '';
       this.dataService.postUserSettingsForm(this.userSettings).subscribe(
         (result) => console.log('success: ', result),
         (error) => this.onHttpError(error)
@@ -53,5 +57,10 @@ export class UserSettingsFormComponent implements OnInit {
     console.error('error: ', errorResponse);
     this.postError = true;
     this.postErrorMessage = errorResponse.error.errorMessage;
+  }
+
+  onSubscriptionChange(type: string): void {
+    console.log(`Changing subscription to [${type}]`);
+    this.userSettings.subscriptionType = type;
   }
 }
